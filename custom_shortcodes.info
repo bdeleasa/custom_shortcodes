@@ -1,0 +1,6 @@
+name = Custom Shortcodes
+description = Provides custom shortcode tags to be used within site content.
+package = Shortcode
+core = 7.x
+dependencies[] = filter
+dependencies[] = shortcode

@@ -1,0 +1,117 @@
+<?php
+/**
+ * @file custom_shortcodes.module
+ */
+
+/**
+ * Implements [mymodule]_shortcode_info
+ *
+ * Define our shortcodes and their titles, descriptions, and callback functions.
+ * See the comments below for an explanation of each parameter
+ *
+ * @param none
+ * @return array
+ */
+function custom_shortcodes_shortcode_info() {
+
+    $shortcodes['button'] = array(
+        'title' => t('Link Button'),  // The title of this shortcode, displayed in the Drupal backend for administrators to enable/disable shortcodes for input types
+        'description' => t('A simple button.'),  // Description shown along with the title in the Drupal backend
+        'process callback' => 'custom_shortcodes_shortcode_button', // Custom function that deals with the variables and html output
+        'tips callback' => 'custom_shortcodes_shortcode_button_tip' // Custom function that displays some help text to the user
+    );
+
+    // $shortcodes['second_shortcode'] = array();
+    // $shortcodes['third_shortcode'] = array();
+    // and so on...
+
+    return $shortcodes;
+}
+
+
+/**
+ * Implements [mymodule]_theme
+ *
+ * Define our variables/attributes for each custom shortcode
+ *
+ * @param none
+ * @return array
+ */
+function custom_shortcodes_theme() {
+
+    return array(
+        'shortcode_button' => array(
+            'variables' => array('text' => '', 'link' => ''),
+        ),
+        // 'shortcode_second_shortcode' => array(),
+        // 'shortcode_third_shortcode' => array(),
+        // and so on...
+    );
+
+}
+
+
+/**
+ * Implements [mymodule]_shortcode_[shortcodename]
+ *
+ * Define our process callback function for our [button] shortcode. This
+ * takes in our shortcode attributes from the shortcode and if empty, sets
+ * the property to the default value stated in this function. We then pass
+ * in our attributes to the theme() function which returns the HTML.
+ *
+ * $attrs = shortcode_attrs(array(
+ *     'attribute' => 'default_value_goes_here'
+ * ),
+ *
+ * @param $attrs array  Array of variables/attributes the user can customize
+ * @return string
+ */
+function custom_shortcodes_shortcode_button($attrs, $text) {
+
+    $attrs = shortcode_attrs(array(
+        'link' => 'http://mywebsite.com'
+    ), $attrs );
+
+    return theme('shortcode_button', array('link' => $attrs['link'], 'text' => $text));
+
+}
+
+
+/**
+ * Implements theme_shortcode_[shortcodename]
+ *
+ * This function returns the output of the shortcode.  The variables/attributes
+ * are passed in as an array.
+ *
+ * @param $vars array
+ * @return string
+ */
+function theme_shortcode_button($vars) {
+    return '<div class="button"><a href="' . $vars['link'] . '">' . $vars['text'] . '</a></div>';
+}
+
+
+/**
+ * Implements [mymodule]_shortcode_[shortcodename]_tip
+ *
+ * This function outputs text below the WYSIWYG editor to tell the user what
+ * shortcodes are available and what the parameters are for the shortcode.
+ *
+ * @param $format stdClass Information about which text format is being used
+ * @param $long bool Whether this is the 'More Info' page for the format
+ * @return string The text to be returned
+ */
+function custom_shortcodes_shortcode_button_tip($format, $long) {
+
+    $output = array();
+    $output[] = '<p><strong>' . t('[button link="http://URLhere.com"]text[/button]') . '</strong> ';
+    if ($long) {
+        $output[] = t('Outputs text that is displayed as a button, which links to a specified URL.') . '</p>';
+    }
+    else {
+        $output[] = t('Outputs text that links to a URL.') . '</p>';
+    }
+
+    return implode(' ', $output);
+
+}
