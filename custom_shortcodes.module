@@ -18,7 +18,8 @@ function custom_shortcodes_shortcode_info() {
         'title' => t('Link Button'),  // The title of this shortcode, displayed in the Drupal backend for administrators to enable/disable shortcodes for input types
         'description' => t('A simple button.'),  // Description shown along with the title in the Drupal backend
         'process callback' => 'custom_shortcodes_shortcode_button', // Custom function that deals with the variables and html output
-        'tips callback' => 'custom_shortcodes_shortcode_button_tip' // Custom function that displays some help text to the user
+        'tips callback' => 'custom_shortcodes_shortcode_button_tip', // Custom function that displays some help text to the user
+        'attributes callback' => 'custom_shortcodes_shortcode_button_attributes' // Custom form to set attributes
     );
 
     // $shortcodes['second_shortcode'] = array();
@@ -113,5 +114,31 @@ function custom_shortcodes_shortcode_button_tip($format, $long) {
     }
 
     return implode(' ', $output);
+
+}
+
+
+/**
+ * Function that creates a module form for users to input the
+ * shortcode attribute values and insert the shortcode with those
+ * values as the attributes.
+ *
+ * @param $form
+ * @param $form_state
+ * @return mixed
+ */
+function custom_shortcodes_shortcode_button_attributes($form, &$form_state) {
+
+    $form['link'] = array(
+        '#title' => t('Button URL'),
+        '#type' => 'textfield',
+        '#states' => array(
+            'visible' => array(
+                ':input[name="shortcode"]' => array('value' => 'button'),
+            ),
+        ),
+    );
+
+    return $form;
 
 }
